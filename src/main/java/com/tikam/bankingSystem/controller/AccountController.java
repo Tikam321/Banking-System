@@ -19,10 +19,12 @@ public class AccountController {
     private AccountServiceImpl accountServiceImpl;
     private UserService userService;
 
+
     @Autowired
     public AccountController(AccountServiceImpl accountServiceImpl, UserService userService) {
         this.accountServiceImpl = accountServiceImpl;
         this.userService = userService;
+
     }
 
     @PostMapping("/")
