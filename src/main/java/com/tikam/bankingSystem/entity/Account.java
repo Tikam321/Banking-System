@@ -8,7 +8,6 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor
 @Entity
 @Table(name = "accounts")
 public class Account {
@@ -25,9 +24,6 @@ public class Account {
         this.id = id;
         this.accountHolderName = accountHolderName;
         this.balance = balance;
-    }
-
-    public Account() {
     }
 
     public Long getId() {
