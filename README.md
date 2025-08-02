@@ -15,3 +15,8 @@ This is a simple Spring Boot-based Banking System application that provides basi
 	•	Docker & Docker Compose
 	•	Maven
 	•	JPA (Hibernate)
+
+postgreSQL configuration 
+psql -U <user_name> postgres
+CREATE ROLE postgres WITH LOGIN PASSWORD 'postgres';
+ALTER ROLE postgres CREATEDB;
