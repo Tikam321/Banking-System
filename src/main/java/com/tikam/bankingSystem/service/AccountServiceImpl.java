@@ -1,28 +1,28 @@
 package com.tikam.bankingSystem.service;
 
+import com.tikam.bankingSystem.RedisService.RedisService;
 import com.tikam.bankingSystem.dto.AccountDto;
 import com.tikam.bankingSystem.entity.Account;
 import com.tikam.bankingSystem.mapper.AccountMapper;
 import com.tikam.bankingSystem.repository.AccountRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
-
-import static com.tikam.bankingSystem.mapper.AccountMapper.getAllAccountDto;
 
 @Service
 public class AccountServiceImpl implements AccountService {
 
-    private AccountRepository accountRepository;
+    private final AccountRepository accountRepository;
 
+    private final RedisService redisService;
 
     @Autowired
-    public AccountServiceImpl(AccountRepository accountRepository) {
+    public AccountServiceImpl(AccountRepository accountRepository, RedisService redisService) {
         this.accountRepository = accountRepository;
+        this.redisService = redisService;
     }
 
     public AccountDto createAccount(AccountDto accountDto) {
@@ -69,14 +69,19 @@ public class AccountServiceImpl implements AccountService {
     }
 
     public AccountDto getAccountById(Long id) {
+        Account account1 = redisService.get(Long.toString(id), Account.class);
+        if (account1 != null) {
+            System.out.println("the value fetched from cache");
+            return AccountMapper.mapToAccountDto(account1);
+        }
         Account account = accountRepository.findById(id).orElseThrow(() -> new RuntimeException("Account does not exist"));
+        System.out.println("fom db get the acount obj" + account);
+//        System.out.println(account);
+        redisService.setAccount(Long.toString(id), account, 100l);
+
+        System.out.println("the Local db is hit");
         return AccountMapper.mapToAccountDto(account);
-
     }
-
-
-
-
 
 
 //    public AccountDto deleteAccountById(Long Id) {
